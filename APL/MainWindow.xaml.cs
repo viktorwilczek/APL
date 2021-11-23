@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+
 
 namespace APL
 {
@@ -54,7 +56,7 @@ namespace APL
                     img.bmpSource = bmpImp;
                     img.setSize();
                     var validator = new ImageClassValidator();
-                    // validator.Validate(img);
+                   validator.Validate(img);
                 }
             }
             catch (ArgumentException ex)
@@ -65,16 +67,6 @@ namespace APL
             {
                 MessageBox.Show("There is an error");
             }
-
-            //OpenFileDialog op = new OpenFileDialog();
-            //op.Title = "Select a picture";
-            //op.Filter = "All supported graphics|*.jpg;*.jpeg;*.png|" +
-            //  "JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|" +
-            //  "Portable Network Graphic (*.png)|*.png";
-            //if (op.ShowDialog() == true)
-            //{
-            //    imgPhoto.Source = new BitmapImage(new Uri(op.FileName));
-            //}
 
         }
     }

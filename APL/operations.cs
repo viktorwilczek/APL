@@ -10,7 +10,7 @@ using System.Windows.Media.Imaging;
 
 namespace gui
 {
-    class ImageClass
+    public class ImageClass
     {
         public Image Result;
         public ImageSource source { get; set; }
@@ -83,7 +83,8 @@ namespace gui
         // i guess it read the memory to create R G B result arrays from the previous operations (c or asm)
         private void AssignNewValues(IntPtr[] redArray, IntPtr[] greenArray, IntPtr[] blueArray)
         {
-            int pixels = bmpBackground.Width * bmpBackground.Height;
+            //int pixels = bmpBackground.Width * bmpBackground.Height;
+            int pixels = bmpSource.Width * bmpSource.Height;
             redResult = new byte[pixels];
             greenResult = new byte[pixels];
             blueResult = new byte[pixels];
@@ -111,15 +112,15 @@ namespace gui
         public Bitmap AfterImageFromRGB()
         {
 
-            Bitmap result_bmp = new Bitmap(bmpBackground.Width, bmpBackground.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            Bitmap result_bmp = new Bitmap(bmpSource.Width, bmpSource.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
             System.Drawing.Color c;
             int arrayIndex;
 
-            for (int x = 0; x < bmpBackground.Width; x++)
+            for (int x = 0; x < bmpSource.Width; x++)
             {
-                for (int y = 0; y < bmpBackground.Height; y++)
+                for (int y = 0; y < bmpSource.Height; y++)
                 {
-                    arrayIndex = y * bmpBackground.Width + x; // obliczenie indeksu
+                    arrayIndex = y * bmpSource.Width + x; // obliczenie indeksu
                     c = System.Drawing.Color.FromArgb(255, redResult[arrayIndex], greenResult[arrayIndex], blueResult[arrayIndex]); // znajdywanie koloru na podstawie wartości rgb
                     //c = System.Drawing.Color.FromArgb(255,128, 255, 6); // znajdywanie koloru na podstawie wartości rgb
                     result_bmp.SetPixel(x, y, c); // ustawianie piksela

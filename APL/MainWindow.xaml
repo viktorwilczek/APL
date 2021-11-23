@@ -9,7 +9,7 @@
     <Grid Margin="0,0,-15,-16">
         <Separator Height="766" Margin="10,10,0,26" RenderTransformOrigin="0.489,0.51" HorizontalAlignment="Left" Width="940"/>
         <Button x:Name="Browse" Content="Browse Image" HorizontalAlignment="Left" Margin="63,464,0,0" VerticalAlignment="Top" Height="40" Width="89" Click="Browse_Click"/>
-        <Image x:Name="imgPhoto" HorizontalAlignment="Left" Height="315" Margin="76,45,0,0" VerticalAlignment="Top" Width="320"/>
+        <Image x:Name="Source" HorizontalAlignment="Left" Height="315" Margin="76,45,0,0" VerticalAlignment="Top" Width="320"/>
         <Border BorderThickness="1" BorderBrush="Black" HorizontalAlignment="Left" Height="342" Margin="63,32,0,0" VerticalAlignment="Top" Width="348"/>
         <Image HorizontalAlignment="Left" Height="315" Margin="556,45,0,0" VerticalAlignment="Top" Width="327"/>
         <Border BorderThickness="1" BorderBrush="Black" HorizontalAlignment="Left" Height="342" Margin="543,32,0,0" VerticalAlignment="Top" Width="348"/>

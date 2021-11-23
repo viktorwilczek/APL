@@ -3,30 +3,32 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-
 namespace gui
 {
     public class ImageClassValidator : AbstractValidator<ImageClass>
     {
         public ImageClassValidator()
         {
-            List<int> weighList = new List<int>() { 1366, 1920, 3840 };
+            List<int> widthList = new List<int>() { 1366, 1920, 3840 };
             List<int> heightsList = new List<int>() { 768, 1080, 2160 };
 
             RuleFor(x => x.heightSource)
                 .NotEmpty()
-                .Equal(x => x.heightBacground)
-                .OnAnyFailure(x =>
-                {
-                    throw new ArgumentException($"Parameter {nameof(x.heightSource)} is invalid.");
-                });
+                .GreaterThan(0)
+                .Must(x => heightsList.Contains(x))
+                   .OnAnyFailure(x =>
+                   {
+                       throw new ArgumentException($"Parameter {nameof(x.heightSource)} is invalid.");
+                   });
+
             RuleFor(x => x.widthSource)
-              .NotEmpty()
-              .Equal(x => x.widthBackground)
-              .OnAnyFailure(x =>
-              {
-                  throw new ArgumentException($"Parameter {nameof(x.widthSource)} is invalid.");
-              });
+               .NotEmpty()
+               .GreaterThan(0)
+               .Must(x => widthList.Contains(x))
+                  .OnAnyFailure(x =>
+                  {
+                      throw new ArgumentException($"Parameter {nameof(x.widthSource)} is invalid.");
+                  });
         }
     }
 }
