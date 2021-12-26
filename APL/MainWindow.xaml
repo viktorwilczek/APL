@@ -11,10 +11,10 @@
         <Button x:Name="Browse" Content="Browse Image" HorizontalAlignment="Left" Margin="63,464,0,0" VerticalAlignment="Top" Height="40" Width="89" Click="Browse_Click"/>
         <Image x:Name="Source" HorizontalAlignment="Left" Height="315" Margin="76,45,0,0" VerticalAlignment="Top" Width="320"/>
         <Border BorderThickness="1" BorderBrush="Black" HorizontalAlignment="Left" Height="342" Margin="63,32,0,0" VerticalAlignment="Top" Width="348"/>
-        <Image HorizontalAlignment="Left" Height="315" Margin="556,45,0,0" VerticalAlignment="Top" Width="327"/>
+        <Image x:Name="Result" HorizontalAlignment="Left" Height="315" Margin="556,45,0,0" VerticalAlignment="Top" Width="327"/>
         <Border BorderThickness="1" BorderBrush="Black" HorizontalAlignment="Left" Height="342" Margin="543,32,0,0" VerticalAlignment="Top" Width="348"/>
         <Button x:Name="RunAsm" Content="Run Asm" HorizontalAlignment="Left" Margin="63,542,0,0" VerticalAlignment="Top" Height="40" Width="89"/>
-        <Button x:Name="RunC" Content="Run C#" HorizontalAlignment="Left" Margin="63,623,0,0" VerticalAlignment="Top" Height="40" Width="89"/>
+        <Button x:Name="RunC" Content="Run C#" HorizontalAlignment="Left" Margin="63,623,0,0" VerticalAlignment="Top" Height="40" Width="89" Click="RunC_Click"/>
         <ComboBox HorizontalAlignment="Left" Margin="543,464,0,0" VerticalAlignment="Top" Width="348" Height="20"/>
         <TextBlock HorizontalAlignment="Left" Margin="402,464,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="18" Width="100"><Run Language="it-it" Text="Select filter:"/></TextBlock>
         <TextBlock HorizontalAlignment="Left" Margin="402,544,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="18" Width="100"><Run Language="it-it" Text="Asm running time:"/></TextBlock>

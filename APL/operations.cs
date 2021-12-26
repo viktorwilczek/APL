@@ -7,6 +7,8 @@ using System.IO;
 using System.Windows.Media;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
+using filterC;
+using System.Threading.Tasks;
 
 namespace gui
 {
@@ -22,11 +24,11 @@ namespace gui
         public short[] redSource { get; set; }
         public short[] greenSource { get; set; }
         public short[] blueSource { get; set; }
-        public byte[] redResult { get; set; }
-        public byte[] greenResult { get; set; }
-        public byte[] blueResult { get; set; }
+        public short[] redResult { get; set; }
+        public short[] greenResult { get; set; }
+        public short[] blueResult { get; set; }
 
-        int pixels { get; set; }
+        public int pixels { get; set; }
         public float time { get; set; }
         const int size = 8;
         private BitmapData bmpDataSource;
@@ -43,14 +45,16 @@ namespace gui
 
         public void createRGB_source()
         {
+            //BitmapData Specifies the attributes of a bitmap image
             BitmapData bmpDataImg;
             Rectangle rect = new Rectangle(0, 0, bmpSource.Width, bmpSource.Height);
+            //LockBits Locks a Bitmap into system memory.
             bmpDataImg = bmpSource.LockBits(rect, ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
             //Gets pointer to the first pixel in the bitmap.  
             IntPtr ptr = bmpDataImg.Scan0;
-            //Gets the number of necessary space in the bytes's array.
-            int pixels = bmpDataImg.Width * bmpSource.Height;
+            //Gets the number of necessary space in the bytes array.
+            pixels = bmpDataImg.Width * bmpSource.Height;
             int bytes = bmpDataImg.Stride * bmpSource.Height;
             byte[] rgbValues = new byte[bytes];
             redSource = new short[pixels];
@@ -62,7 +66,7 @@ namespace gui
             int stride = bmpDataImg.Stride;
 
 
-            //loops to create R G B tables based on bitmap
+            //loops to create R G B arrays based on bitmap
             for (int row = 0; row < bmpDataImg.Height; row++)
             {
                 for (int column = 0; column < bmpDataImg.Width; column++)
@@ -75,38 +79,70 @@ namespace gui
             bmpDataSource = bmpDataImg;
             bmpSource.UnlockBits(bmpDataImg);
         }
-        
+
         // TODO:
         // ADD c function
         // ADD asm function
 
-        // i guess it read the memory to create R G B result arrays from the previous operations (c or asm)
-        private void AssignNewValues(IntPtr[] redArray, IntPtr[] greenArray, IntPtr[] blueArray)
+        //(int heightSource, int widthSource, short[] redSource, short[] blueSource, short[] greenSource)
+        public void Filter_c()
         {
-            //int pixels = bmpBackground.Width * bmpBackground.Height;
-            int pixels = bmpSource.Width * bmpSource.Height;
-            redResult = new byte[pixels];
-            greenResult = new byte[pixels];
-            blueResult = new byte[pixels];
+            redResult = new short[pixels];
+            blueResult = new short[pixels];
+            greenResult = new short[pixels];
+            //gaussian blur
+            short[] kernel = { 1, 2, 1, 2, 4, 2, 1, 2, 1 };
+            int kernel_val = 16;
 
+            //mean blur
+            //short[] kernel = { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+            //int kernel_val = 9;
+           
 
-            int count = 0;
-            for (int y = 0; y < pixels / size; y++)
-            {
-                for (int x = 0; x < size; x++)
-                {
-                    //redResult[count] = Convert.ToByte((Convert.ToInt32(redBackground[count]) * (100 - alpha) + Convert.ToInt32(redSource[count] )* alpha) / 100);  
-                    //greenResult[count] = Convert.ToByte((Convert.ToInt32(greenBackground[count]) * (100 - alpha) + Convert.ToInt32(greenSource[count]) * alpha) / 100);
-                    //blueResult[count] = Convert.ToByte((Convert.ToInt32(blueBackground[count]) * (100 - alpha) + Convert.ToInt32(blueSource[count++]) * alpha) / 100);
-                    redResult[count] = Marshal.ReadByte(redArray[y] + 2 * x);
-                    greenResult[count] = Marshal.ReadByte(greenArray[y] + 2 * x);
-                    blueResult[count++] = Marshal.ReadByte(blueArray[y] + 2 * x);
-                    // przypisanie do r g b
-
-
-                }
-            }
+            Filter Filter = new Filter();
+            Parallel.Invoke(() =>
+                            {
+                                Filter.kernel_filter(heightSource, widthSource, redSource, redResult, kernel, kernel_val);
+                            },
+                            () =>
+                            {
+                                Filter.kernel_filter(heightSource, widthSource, blueSource, blueResult, kernel, kernel_val);
+                            },
+                            () =>
+                            {
+                                Filter.kernel_filter(heightSource, widthSource, greenSource, greenResult, kernel, kernel_val);
+                            }
+                           );                          
         }
+
+
+        // i guess it read the memory to create R G B result arrays from the previous operations (c or asm)
+        //private void assignnewvalues(intptr[] redarray, intptr[] greenarray, intptr[] bluearray)
+        //{
+        //    //int pixels = bmpbackground.width * bmpbackground.height;
+        //    int pixels = bmpsource.width * bmpsource.height;
+        //    redresult = new byte[pixels];
+        //    greenresult = new byte[pixels];
+        //    blueresult = new byte[pixels];
+
+
+        //    int count = 0;
+        //    for (int y = 0; y < pixels / size; y++)
+        //    {
+        //        for (int x = 0; x < size; x++)
+        //        {
+        //            //redresult[count] = convert.tobyte((convert.toint32(redbackground[count]) * (100 - alpha) + convert.toint32(redsource[count] )* alpha) / 100);  
+        //            //greenresult[count] = convert.tobyte((convert.toint32(greenbackground[count]) * (100 - alpha) + convert.toint32(greensource[count]) * alpha) / 100);
+        //            //blueresult[count] = convert.tobyte((convert.toint32(bluebackground[count]) * (100 - alpha) + convert.toint32(bluesource[count++]) * alpha) / 100);
+        //            redresult[count] = marshal.readbyte(redarray[y] + 2 * x);
+        //            greenresult[count] = marshal.readbyte(greenarray[y] + 2 * x);
+        //            blueresult[count++] = marshal.readbyte(bluearray[y] + 2 * x);
+        //            // przypisanie do r g b
+
+
+        //        }
+        //    }
+        //}
 
         // makes an image from the separate R G B results
         public Bitmap AfterImageFromRGB()
@@ -147,6 +183,8 @@ namespace gui
             }
         }
 
+    
 
     }
 }
+

@@ -69,5 +69,12 @@ namespace APL
             }
 
         }
+        private void RunC_Click(object sender, RoutedEventArgs e) {
+            img.createRGB_source();
+            img.Filter_c();
+            var result_img = img.BitmapToImageSource(img.AfterImageFromRGB());
+            Result.Source = result_img;
+        }
+
     }
 }

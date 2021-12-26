@@ -9,8 +9,8 @@ namespace gui
     {
         public ImageClassValidator()
         {
-            List<int> widthList = new List<int>() { 1366, 1920, 3840 };
-            List<int> heightsList = new List<int>() { 768, 1080, 2160 };
+            List<int> widthList = new List<int>() { 300, 1366, 1920, 1800, 3840 };
+            List<int> heightsList = new List<int>() { 300, 768, 1080, 1800, 2160 };
 
             RuleFor(x => x.heightSource)
                 .NotEmpty()
