@@ -9,8 +9,8 @@ namespace gui
     {
         public ImageClassValidator()
         {
-            List<int> widthList = new List<int>() { 300, 1366, 1920, 1800, 3840 };
-            List<int> heightsList = new List<int>() { 300, 768, 1080, 1800, 2160 };
+            List<int> widthList = new List<int>() { 200, 300, 600, 1920, 1800, 3000 };
+            List<int> heightsList = new List<int>() { 200, 300, 600, 1080, 1800, 3000};
 
             RuleFor(x => x.heightSource)
                 .NotEmpty()
@@ -18,7 +18,7 @@ namespace gui
                 .Must(x => heightsList.Contains(x))
                    .OnAnyFailure(x =>
                    {
-                       throw new ArgumentException($"Parameter {nameof(x.heightSource)} is invalid.");
+                       throw new ArgumentException($"Parameter {nameof(x.heightSource)} is invalid. Allowed sizes are: 200x200, 300x300, 600x600, 1800x1800, 3000x3000");
                    });
 
             RuleFor(x => x.widthSource)
@@ -27,7 +27,7 @@ namespace gui
                .Must(x => widthList.Contains(x))
                   .OnAnyFailure(x =>
                   {
-                      throw new ArgumentException($"Parameter {nameof(x.widthSource)} is invalid.");
+                      throw new ArgumentException($"Parameter {nameof(x.widthSource)} is invalid. Allowed sizes are: 200x200, 300x300, 600x600, 1800x1800, 3000x3000");
                   });
         }
     }

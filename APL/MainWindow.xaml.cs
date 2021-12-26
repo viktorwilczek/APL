@@ -31,6 +31,11 @@ namespace APL
         {
             img = new ImageClass();
             InitializeComponent();
+            mybox.Items.Add("Gaussian blur");
+            //mybox.Items.Add("Mean blur");
+            mybox.Items.Add("Edge detection");
+            mybox.Items.Add("Sharpen");
+            mybox.SelectedItem = "Gaussian blur";
         }
 
         private void Browse_Click(object sender, RoutedEventArgs e)
@@ -69,9 +74,11 @@ namespace APL
             }
 
         }
-        private void RunC_Click(object sender, RoutedEventArgs e) {
+        private void RunC_Click(object sender, RoutedEventArgs e) {   
             img.createRGB_source();
-            img.Filter_c();
+            String filter_type = mybox.Text;
+            Ctime.Text = img.Filter_c(filter_type).ToString();
+          
             var result_img = img.BitmapToImageSource(img.AfterImageFromRGB());
             Result.Source = result_img;
         }

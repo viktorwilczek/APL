@@ -15,12 +15,12 @@
         <Border BorderThickness="1" BorderBrush="Black" HorizontalAlignment="Left" Height="342" Margin="543,32,0,0" VerticalAlignment="Top" Width="348"/>
         <Button x:Name="RunAsm" Content="Run Asm" HorizontalAlignment="Left" Margin="63,542,0,0" VerticalAlignment="Top" Height="40" Width="89"/>
         <Button x:Name="RunC" Content="Run C#" HorizontalAlignment="Left" Margin="63,623,0,0" VerticalAlignment="Top" Height="40" Width="89" Click="RunC_Click"/>
-        <ComboBox HorizontalAlignment="Left" Margin="543,464,0,0" VerticalAlignment="Top" Width="348" Height="20"/>
+        <ComboBox x:Name="mybox" HorizontalAlignment="Left" Margin="543,464,0,0" VerticalAlignment="Top" Width="348" Height="20"/>
         <TextBlock HorizontalAlignment="Left" Margin="402,464,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="18" Width="100"><Run Language="it-it" Text="Select filter:"/></TextBlock>
         <TextBlock HorizontalAlignment="Left" Margin="402,544,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="18" Width="100"><Run Language="it-it" Text="Asm running time:"/></TextBlock>
         <TextBlock HorizontalAlignment="Left" Margin="402,625,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="18" Width="100"><Run Text="C"/><Run Language="it-it" Text="#"/><Run Text=" running time:"/></TextBlock>
-        <TextBlock HorizontalAlignment="Left" Height="18" Margin="543,544,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="348"/>
-        <TextBlock HorizontalAlignment="Left" Height="18" Margin="543,625,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="348"/>
+        <TextBlock x:Name="ASMtime" HorizontalAlignment="Left" Height="18" Margin="543,544,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="348"/>
+        <TextBlock x:Name="Ctime" HorizontalAlignment="Left" Height="18" Margin="543,625,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="348"/>
         <TextBlock HorizontalAlignment="Left" Margin="237,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="18" Width="100"><Run Language="it-it" Text="Input "/></TextBlock>
         <TextBlock HorizontalAlignment="Left" Margin="717,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="18" Width="100"><Run Language="it-it" Text="Output"/></TextBlock>
     </Grid>

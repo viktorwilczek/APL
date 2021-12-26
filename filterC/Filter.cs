@@ -51,6 +51,15 @@ namespace filterC
                     source[(i + (width - 1))] * kernel[6] +
                     source[(i + (width))] * kernel[7] +
                     source[(i + (width + 1))] * kernel[8]) / kernel_value));
+
+                    if (result_rgb[i] < 0)
+                    {
+                        result_rgb[i] = 0;
+                    }
+                    if (result_rgb[i] > 255)
+                    {
+                        result_rgb[i] = 255;
+                    }
                 }
             }
         }

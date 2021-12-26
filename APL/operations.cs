@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
 using filterC;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace gui
 {
@@ -34,7 +35,6 @@ namespace gui
         private BitmapData bmpDataSource;
 
         //TODO:
-        // add c dll import
         // add asm dll import 
 
         public void setSize()
@@ -85,19 +85,60 @@ namespace gui
         // ADD asm function
 
         //(int heightSource, int widthSource, short[] redSource, short[] blueSource, short[] greenSource)
-        public void Filter_c()
+        public String Filter_c(String filter_type)
         {
             redResult = new short[pixels];
             blueResult = new short[pixels];
             greenResult = new short[pixels];
+
             //gaussian blur
             short[] kernel = { 1, 2, 1, 2, 4, 2, 1, 2, 1 };
             int kernel_val = 16;
 
-            //mean blur
-            //short[] kernel = { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-            //int kernel_val = 9;
-           
+            if (filter_type.Equals("Sharpen"))
+            {
+                kernel[0] = 0;
+                kernel[1] = -1;
+                kernel[2] = 0;
+                kernel[3] = -1;
+                kernel[4] = 5;
+                kernel[5] = -1;
+                kernel[6] = 0;
+                kernel[7] = -1;
+                kernel[8] = 0;
+                kernel_val = 1;
+            }
+
+            if (filter_type.Equals("Edge detection"))
+            {
+                kernel[0] = -1;
+                kernel[1] = -1;
+                kernel[2] = -1;
+                kernel[3] = -1;
+                kernel[4] = 8;
+                kernel[5] = -1;
+                kernel[6] = -1;
+                kernel[7] = -1;
+                kernel[8] = -1;
+                kernel_val = 1;
+            }
+
+            //if (filter_type.Equals("Mean blur"))
+            //{              
+            //    kernel[0] = 1;
+            //    kernel[1] = 1;
+            //    kernel[2] = 1;
+            //    kernel[3] = 1;
+            //    kernel[4] = 1;
+            //    kernel[5] = 1;
+            //    kernel[6] = 1;
+            //    kernel[7] = 1;
+            //    kernel[8] = 1;
+            //    kernel_val = 9;
+            //}
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            //System.Threading.Thread.Sleep(5000);
 
             Filter Filter = new Filter();
             Parallel.Invoke(() =>
@@ -112,9 +153,16 @@ namespace gui
                             {
                                 Filter.kernel_filter(heightSource, widthSource, greenSource, greenResult, kernel, kernel_val);
                             }
-                           );                          
-        }
+                           );
+            stopwatch.Stop();
+            TimeSpan tspan = stopwatch.Elapsed;
+            String elapsedTime = String.Format(" {0:00}:{1:00}.{2:000} ",
+                 tspan.Minutes, tspan.Seconds, tspan.Milliseconds );
 
+
+            return elapsedTime;
+        }
+        
 
         // i guess it read the memory to create R G B result arrays from the previous operations (c or asm)
         //private void assignnewvalues(intptr[] redarray, intptr[] greenarray, intptr[] bluearray)
