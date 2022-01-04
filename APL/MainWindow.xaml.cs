@@ -83,5 +83,16 @@ namespace APL
             Result.Source = result_img;
         }
 
+        private void RunAsm_Click(object sender, RoutedEventArgs e)
+        {
+            img.createRGB_source();
+            String filter_type = mybox.Text;
+            // call the asm fucntion here
+            //Ctime.Text = img.Filter_c(filter_type).ToString();
+
+            var result_img = img.BitmapToImageSource(img.AfterImageFromRGB());
+            Result.Source = result_img;
+
+        }
     }
 }

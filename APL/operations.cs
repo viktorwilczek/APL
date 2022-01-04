@@ -34,8 +34,6 @@ namespace gui
         const int size = 8;
         private BitmapData bmpDataSource;
 
-        //TODO:
-        // add asm dll import 
 
         public void setSize()
         {
@@ -80,11 +78,77 @@ namespace gui
             bmpSource.UnlockBits(bmpDataImg);
         }
 
+        // you can base it on this function or create a new one.
         // TODO:
-        // ADD c function
         // ADD asm function
+        // here you can call the asm function. Same concept as the Filter_c fucntion below. 
+        // so something like:
+        // public String Filter_asm(String filter_type)
+        // {
+              // these are the result arrays
+        //    redResult = new short[pixels];
+        //    blueResult = new short[pixels];
+        //    greenResult = new short[pixels];
 
-        //(int heightSource, int widthSource, short[] redSource, short[] blueSource, short[] greenSource)
+        //    //gaussian blur, here the kernel filters are initialized
+        //    short[] kernel = { 1, 2, 1, 2, 4, 2, 1, 2, 1 };
+        //    int kernel_val = 16;
+
+        //    if (filter_type.Equals("Sharpen"))
+        //    {
+        //        kernel[0] = 0;
+        //        kernel[1] = -1;
+        //        kernel[2] = 0;
+        //        kernel[3] = -1;
+        //        kernel[4] = 5;
+        //        kernel[5] = -1;
+        //        kernel[6] = 0;
+        //        kernel[7] = -1;
+        //        kernel[8] = 0;
+        //        kernel_val = 1;
+        //    }
+
+        //    if (filter_type.Equals("Edge detection"))
+        //    {
+        //        kernel[0] = -1;
+        //        kernel[1] = -1;
+        //        kernel[2] = -1;
+        //        kernel[3] = -1;
+        //        kernel[4] = 8;
+        //        kernel[5] = -1;
+        //        kernel[6] = -1;
+        //        kernel[7] = -1;
+        //        kernel[8] = -1;
+        //        kernel_val = 1;
+        //    }
+
+        //    Stopwatch stopwatch = Stopwatch.StartNew();
+        //    //System.Threading.Thread.Sleep(5000);
+
+        //    
+        //    Parallel.Invoke(() =>
+        //                    {
+        //                        CALL THE ASM FUNCTION (heightSource, widthSource, redSource, redResult, kernel, kernel_val);
+        //                    },
+        //                    () =>
+        //                    {
+        //                        CALL THE ASM FUNCTION (heightSource, widthSource, blueSource, blueResult, kernel, kernel_val);
+        //                    },
+        //                    () =>
+        //                    {
+        //                        CALL THE ASM FUNCTION (heightSource, widthSource, greenSource, greenResult, kernel, kernel_val);
+        //                    }
+        //                   );
+        //    stopwatch.Stop();
+        //    TimeSpan tspan = stopwatch.Elapsed;
+        //    String elapsedTime = String.Format(" {0:00}:{1:00}.{2:000} ",
+        //         tspan.Minutes, tspan.Seconds, tspan.Milliseconds );
+
+
+        //    return elapsedTime;
+        //}
+
+
         public String Filter_c(String filter_type)
         {
             redResult = new short[pixels];
