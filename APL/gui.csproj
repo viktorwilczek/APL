@@ -4,6 +4,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,5 +15,9 @@
   <ItemGroup>
     <ProjectReference Include="..\filterC\filterC.csproj" />
   </ItemGroup>
+	
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+	<Exec Command="copy /Y &quot;$(SolutionDir)x64\Debug\kernel_filter_asm.dll&quot; &quot;$(TargetDir)&quot;&#xD;&#xA;copy /Y &quot;$(SolutionDir)x64\Release\kernel_filter_asm.dll&quot; &quot;$(TargetDir)&quot;" />
+  </Target>
 
 </Project>

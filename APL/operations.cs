@@ -15,32 +15,47 @@ namespace gui
 {
     public class ImageClass
     {
+        //final image after filtering
         public Image Result;
+        //the source image
         public ImageSource source { get; set; }
-        public Image result { get; set; }
-        public int test { get; set; }
+        //the source image in bitmap format
         public Bitmap bmpSource { get; set; }
+        //width of the image
         public int widthSource { get; set; }
+        //height of the image
         public int heightSource { get; set; }
+        //red channel of source image
         public short[] redSource { get; set; }
+        //green channel of source image
         public short[] greenSource { get; set; }
+        //blue channel of source image
         public short[] blueSource { get; set; }
+        //red channel of result image
         public short[] redResult { get; set; }
+        //red channel of result image
         public short[] greenResult { get; set; }
+        //red channel of result image
         public short[] blueResult { get; set; }
-
+        //number of pixels in the image
         public int pixels { get; set; }
-        public float time { get; set; }
-        const int size = 8;
+        //bitmapdata of image
         private BitmapData bmpDataSource;
 
+        //import asm dll
+        [System.Runtime.InteropServices.DllImport("kernel_filter_asm.dll", CallingConvention = CallingConvention.Cdecl)]
+        static extern void _kernel_filter(int height, int width, IntPtr source, IntPtr result_rgb, IntPtr kernel, int kernel_val);
 
+
+        //set size of the image
         public void setSize()
         {
             heightSource = this.bmpSource.Height;
             widthSource = this.bmpSource.Width;
         }
 
+
+        //creates separate RGB channels
         public void createRGB_source()
         {
             //BitmapData Specifies the attributes of a bitmap image
@@ -55,14 +70,15 @@ namespace gui
             pixels = bmpDataImg.Width * bmpSource.Height;
             int bytes = bmpDataImg.Stride * bmpSource.Height;
             byte[] rgbValues = new byte[bytes];
+            //RGB arrays
             redSource = new short[pixels];
             greenSource = new short[pixels];
             blueSource = new short[pixels];
 
+            //from bitmap to rgb
             System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
             int count = 0;
             int stride = bmpDataImg.Stride;
-
 
             //loops to create R G B arrays based on bitmap
             for (int row = 0; row < bmpDataImg.Height; row++)
@@ -78,87 +94,21 @@ namespace gui
             bmpSource.UnlockBits(bmpDataImg);
         }
 
-        // you can base it on this function or create a new one.
-        // TODO:
-        // ADD asm function
-        // here you can call the asm function. Same concept as the Filter_c fucntion below. 
-        // so something like:
-        // public String Filter_asm(String filter_type)
-        // {
-              // these are the result arrays
-        //    redResult = new short[pixels];
-        //    blueResult = new short[pixels];
-        //    greenResult = new short[pixels];
 
-        //    //gaussian blur, here the kernel filters are initialized
-        //    short[] kernel = { 1, 2, 1, 2, 4, 2, 1, 2, 1 };
-        //    int kernel_val = 16;
-
-        //    if (filter_type.Equals("Sharpen"))
-        //    {
-        //        kernel[0] = 0;
-        //        kernel[1] = -1;
-        //        kernel[2] = 0;
-        //        kernel[3] = -1;
-        //        kernel[4] = 5;
-        //        kernel[5] = -1;
-        //        kernel[6] = 0;
-        //        kernel[7] = -1;
-        //        kernel[8] = 0;
-        //        kernel_val = 1;
-        //    }
-
-        //    if (filter_type.Equals("Edge detection"))
-        //    {
-        //        kernel[0] = -1;
-        //        kernel[1] = -1;
-        //        kernel[2] = -1;
-        //        kernel[3] = -1;
-        //        kernel[4] = 8;
-        //        kernel[5] = -1;
-        //        kernel[6] = -1;
-        //        kernel[7] = -1;
-        //        kernel[8] = -1;
-        //        kernel_val = 1;
-        //    }
-
-        //    Stopwatch stopwatch = Stopwatch.StartNew();
-        //    //System.Threading.Thread.Sleep(5000);
-
-        //    
-        //    Parallel.Invoke(() =>
-        //                    {
-        //                        CALL THE ASM FUNCTION (heightSource, widthSource, redSource, redResult, kernel, kernel_val);
-        //                    },
-        //                    () =>
-        //                    {
-        //                        CALL THE ASM FUNCTION (heightSource, widthSource, blueSource, blueResult, kernel, kernel_val);
-        //                    },
-        //                    () =>
-        //                    {
-        //                        CALL THE ASM FUNCTION (heightSource, widthSource, greenSource, greenResult, kernel, kernel_val);
-        //                    }
-        //                   );
-        //    stopwatch.Stop();
-        //    TimeSpan tspan = stopwatch.Elapsed;
-        //    String elapsedTime = String.Format(" {0:00}:{1:00}.{2:000} ",
-        //         tspan.Minutes, tspan.Seconds, tspan.Milliseconds );
-
-
-        //    return elapsedTime;
-        //}
-
-
-        public String Filter_c(String filter_type)
+        //calls the filter implemented in assembly
+        public string filter_asm(string filter_type)
         {
+            //prepare result array
             redResult = new short[pixels];
             blueResult = new short[pixels];
             greenResult = new short[pixels];
 
+            //defining kernel filter base on user choice
             //gaussian blur
             short[] kernel = { 1, 2, 1, 2, 4, 2, 1, 2, 1 };
             int kernel_val = 16;
 
+            //sharpen kernel filter
             if (filter_type.Equals("Sharpen"))
             {
                 kernel[0] = 0;
@@ -173,6 +123,7 @@ namespace gui
                 kernel_val = 1;
             }
 
+            //edge detection kernel filter
             if (filter_type.Equals("Edge detection"))
             {
                 kernel[0] = -1;
@@ -187,23 +138,180 @@ namespace gui
                 kernel_val = 1;
             }
 
-            //if (filter_type.Equals("Mean blur"))
-            //{              
-            //    kernel[0] = 1;
-            //    kernel[1] = 1;
-            //    kernel[2] = 1;
-            //    kernel[3] = 1;
-            //    kernel[4] = 1;
-            //    kernel[5] = 1;
-            //    kernel[6] = 1;
-            //    kernel[7] = 1;
-            //    kernel[8] = 1;
-            //    kernel_val = 9;
-            //}
+            //mean blur kernel filter
+            if (filter_type.Equals("Mean blur"))
+            {
+                kernel[0] = 1;
+                kernel[1] = 1;
+                kernel[2] = 1;
+                kernel[3] = 1;
+                kernel[4] = 1;
+                kernel[5] = 1;
+                kernel[6] = 1;
+                kernel[7] = 1;
+                kernel[8] = 1;
+                kernel_val = 9;
+            }
 
+            //allocating memomry for source and result rgb channels
+            IntPtr kernelPtr = Marshal.AllocHGlobal(18);
+            Marshal.Copy(kernel, 0, kernelPtr, 9);
+
+            IntPtr redSourcePtr = Marshal.AllocHGlobal(pixels * 2);
+            Marshal.Copy(redSource, 0, redSourcePtr, pixels);
+            IntPtr redResultPtr = Marshal.AllocHGlobal(pixels * 2);
+
+            IntPtr blueSourcePtr = Marshal.AllocHGlobal(pixels * 2);
+            Marshal.Copy(blueSource, 0, blueSourcePtr, pixels);
+            IntPtr blueResultPtr = Marshal.AllocHGlobal(pixels * 2);
+
+            IntPtr greenSourcePtr = Marshal.AllocHGlobal(pixels * 2);
+            Marshal.Copy(greenSource, 0, greenSourcePtr, pixels);
+            IntPtr greenResultPtr = Marshal.AllocHGlobal(pixels * 2);
+
+            //starting the stopwatch
             Stopwatch stopwatch = Stopwatch.StartNew();
-            //System.Threading.Thread.Sleep(5000);
+            
+            //invoke the asm kernel filter in parallel respectively on R,G and B channels
+            Parallel.Invoke(() =>
+                            {
+                                _kernel_filter(heightSource, widthSource, redSourcePtr, redResultPtr, kernelPtr, kernel_val);
+                            },
+                            () =>
+                            {
+                                _kernel_filter(heightSource, widthSource, blueSourcePtr, blueResultPtr, kernelPtr, kernel_val);
+                            },
+                            () =>
+                            {
+                                _kernel_filter(heightSource, widthSource, greenSourcePtr, greenResultPtr, kernelPtr, kernel_val);
+                            }
+                           );
 
+            //stop the stopwatch and format return string
+            stopwatch.Stop();
+            TimeSpan tspan = stopwatch.Elapsed;
+            String elapsedTime = String.Format(" {0:00}:{1:00}.{2:000} ",
+                 tspan.Minutes, tspan.Seconds, tspan.Milliseconds);
+
+            //used to copy values from pointer to short array
+            short[] redResultTmp = new short[pixels];
+            short[] blueResultTmp = new short[pixels];
+            short[] greenResultTmp = new short[pixels];
+
+            //copy the result values
+            Marshal.Copy(redResultPtr, redResultTmp, 0, pixels);
+            Marshal.Copy(blueResultPtr, blueResultTmp, 0, pixels);
+            Marshal.Copy(greenResultPtr, greenResultTmp, 0, pixels);
+
+            //copy to final destination
+            for (int i = 0; i < pixels; i++)
+            {
+                redResult[i] = redResultTmp[i];
+
+                if (redResultTmp[i] < 0)
+                {
+                    redResult[i] = 0;
+                }
+                if (redResultTmp[i] > 255)
+                {
+                    redResult[i] = 255;
+                }
+
+            }
+
+            for (int i = 0; i < pixels; i++)
+            {
+                greenResult[i] = greenResultTmp[i];
+                if (greenResultTmp[i] < 0)
+                {
+                    greenResult[i] = 0;
+                }
+                if (greenResultTmp[i] > 255)
+                {
+                    greenResult[i] = 255;
+                }
+
+            }
+
+            for (int i = 0; i < pixels; i++)
+            {
+                blueResult[i] = blueResultTmp[i];
+                if (blueResultTmp[i] < 0)
+                {
+                    blueResult[i] = 0;
+                }
+                if (blueResultTmp[i] > 255)
+                {
+                    blueResult[i] = 255;
+                }
+
+            }
+
+            return elapsedTime;
+        }
+
+        //calls the filter implemented in c#
+        public String Filter_c(String filter_type)
+        {
+            //prepare result array
+            redResult = new short[pixels];
+            blueResult = new short[pixels];
+            greenResult = new short[pixels];
+
+            //defining kernel filter base on user choice
+            //gaussian blur
+            short[] kernel = { 1, 2, 1, 2, 4, 2, 1, 2, 1 };
+            int kernel_val = 16;
+
+            //sharpen kernel filter
+            if (filter_type.Equals("Sharpen"))
+            {
+                kernel[0] = 0;
+                kernel[1] = -1;
+                kernel[2] = 0;
+                kernel[3] = -1;
+                kernel[4] = 5;
+                kernel[5] = -1;
+                kernel[6] = 0;
+                kernel[7] = -1;
+                kernel[8] = 0;
+                kernel_val = 1;
+            }
+
+            //edge detection kernel filter
+            if (filter_type.Equals("Edge detection"))
+            {
+                kernel[0] = -1;
+                kernel[1] = -1;
+                kernel[2] = -1;
+                kernel[3] = -1;
+                kernel[4] = 8;
+                kernel[5] = -1;
+                kernel[6] = -1;
+                kernel[7] = -1;
+                kernel[8] = -1;
+                kernel_val = 1;
+            }
+
+            //mean blur kernel filter
+            if (filter_type.Equals("Mean blur"))
+            {
+                kernel[0] = 1;
+                kernel[1] = 1;
+                kernel[2] = 1;
+                kernel[3] = 1;
+                kernel[4] = 1;
+                kernel[5] = 1;
+                kernel[6] = 1;
+                kernel[7] = 1;
+                kernel[8] = 1;
+                kernel_val = 9;
+            }
+
+            //start stopwatch
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            //invoke the c# kernel filter in parallel respectively on R,G and B channels
             Filter Filter = new Filter();
             Parallel.Invoke(() =>
                             {
@@ -218,61 +326,35 @@ namespace gui
                                 Filter.kernel_filter(heightSource, widthSource, greenSource, greenResult, kernel, kernel_val);
                             }
                            );
+
+            //stop the stopwatch and format return string
             stopwatch.Stop();
             TimeSpan tspan = stopwatch.Elapsed;
             String elapsedTime = String.Format(" {0:00}:{1:00}.{2:000} ",
                  tspan.Minutes, tspan.Seconds, tspan.Milliseconds );
 
-
             return elapsedTime;
         }
-        
-
-        // i guess it read the memory to create R G B result arrays from the previous operations (c or asm)
-        //private void assignnewvalues(intptr[] redarray, intptr[] greenarray, intptr[] bluearray)
-        //{
-        //    //int pixels = bmpbackground.width * bmpbackground.height;
-        //    int pixels = bmpsource.width * bmpsource.height;
-        //    redresult = new byte[pixels];
-        //    greenresult = new byte[pixels];
-        //    blueresult = new byte[pixels];
-
-
-        //    int count = 0;
-        //    for (int y = 0; y < pixels / size; y++)
-        //    {
-        //        for (int x = 0; x < size; x++)
-        //        {
-        //            //redresult[count] = convert.tobyte((convert.toint32(redbackground[count]) * (100 - alpha) + convert.toint32(redsource[count] )* alpha) / 100);  
-        //            //greenresult[count] = convert.tobyte((convert.toint32(greenbackground[count]) * (100 - alpha) + convert.toint32(greensource[count]) * alpha) / 100);
-        //            //blueresult[count] = convert.tobyte((convert.toint32(bluebackground[count]) * (100 - alpha) + convert.toint32(bluesource[count++]) * alpha) / 100);
-        //            redresult[count] = marshal.readbyte(redarray[y] + 2 * x);
-        //            greenresult[count] = marshal.readbyte(greenarray[y] + 2 * x);
-        //            blueresult[count++] = marshal.readbyte(bluearray[y] + 2 * x);
-        //            // przypisanie do r g b
-
-
-        //        }
-        //    }
-        //}
 
         // makes an image from the separate R G B results
         public Bitmap AfterImageFromRGB()
         {
-
+            //prepare result bitmap
             Bitmap result_bmp = new Bitmap(bmpSource.Width, bmpSource.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
             System.Drawing.Color c;
-            int arrayIndex;
 
+            //loop to create the result bitmap
+            int arrayIndex;
             for (int x = 0; x < bmpSource.Width; x++)
             {
                 for (int y = 0; y < bmpSource.Height; y++)
                 {
-                    arrayIndex = y * bmpSource.Width + x; // obliczenie indeksu
-                    c = System.Drawing.Color.FromArgb(255, redResult[arrayIndex], greenResult[arrayIndex], blueResult[arrayIndex]); // znajdywanie koloru na podstawie wartości rgb
-                    //c = System.Drawing.Color.FromArgb(255,128, 255, 6); // znajdywanie koloru na podstawie wartości rgb
-                    result_bmp.SetPixel(x, y, c); // ustawianie piksela
-                    //var handle = result_bmp.GetHbitmap();
+                    //calculate index
+                    arrayIndex = y * bmpSource.Width + x; 
+                    //set color based on rgb values
+                    c = System.Drawing.Color.FromArgb(255, redResult[arrayIndex], greenResult[arrayIndex], blueResult[arrayIndex]); 
+                    //set pixel based on location and color
+                    result_bmp.SetPixel(x, y, c);
                 }
             }
             return result_bmp;
@@ -281,6 +363,7 @@ namespace gui
         // makes an image from the bitmap generated by AfterImageFromRGB
         public BitmapImage BitmapToImageSource(Bitmap bitmap)
         {
+            //creates image to be set in the output window
             using (MemoryStream memory = new MemoryStream())
             {
                 bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);

@@ -32,15 +32,15 @@ namespace APL
             img = new ImageClass();
             InitializeComponent();
             mybox.Items.Add("Gaussian blur");
-            //mybox.Items.Add("Mean blur");
+            mybox.Items.Add("Mean blur");
             mybox.Items.Add("Edge detection");
             mybox.Items.Add("Sharpen");
             mybox.SelectedItem = "Gaussian blur";
         }
 
+        //load an image from the computer
         private void Browse_Click(object sender, RoutedEventArgs e)
         {
-
             try
             {
                 Uri sourceUri = null;
@@ -56,12 +56,11 @@ namespace APL
                     img.source = Source.Source;
                     FileInfo file = new FileInfo(openFileDialog.FileName);
                     Bitmap bmpImp = new Bitmap(openFileDialog.FileName);
-                    ///Validator 
                     Source.Source = new BitmapImage(sourceUri);
                     img.bmpSource = bmpImp;
                     img.setSize();
                     var validator = new ImageClassValidator();
-                   validator.Validate(img);
+                    validator.Validate(img);
                 }
             }
             catch (ArgumentException ex)
@@ -74,6 +73,9 @@ namespace APL
             }
 
         }
+
+
+        //run the c# algorithm with the chosen image and display the running time
         private void RunC_Click(object sender, RoutedEventArgs e) {   
             img.createRGB_source();
             String filter_type = mybox.Text;
@@ -83,13 +85,16 @@ namespace APL
             Result.Source = result_img;
         }
 
+
+        //run the c# algorithm with the chosen image and display the running time
         private void RunAsm_Click(object sender, RoutedEventArgs e)
         {
+            
             img.createRGB_source();
             String filter_type = mybox.Text;
             // call the asm fucntion here
-            //Ctime.Text = img.Filter_c(filter_type).ToString();
-
+            
+            ASMtime.Text = img.filter_asm(filter_type).ToString();
             var result_img = img.BitmapToImageSource(img.AfterImageFromRGB());
             Result.Source = result_img;
 

@@ -43,7 +43,7 @@ namespace filterC
                 else
                 {
                     result_rgb[i] = ((short)(((source[i + (-width - 1)] * kernel[0]) +
-                    source[i + (-width - 1)] * kernel[1] +
+                    source[i + (-width )] * kernel[1] +
                     source[i + (-width + 1)] * kernel[2] +
                     source[(i - 1)] * kernel[3] +
                     source[(i)] * kernel[4] +
